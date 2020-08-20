@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const mongoose = require('mongoose')
-mongoose.connect(MLAB_URI, { useNewUrlParser: true, useUnifiedTopology: true }); 
+mongoose.connect(process.env.MLAB_URI, { useNewUrlParser: true, useUnifiedTopology: true }); 
 
 app.use(cors())
 
