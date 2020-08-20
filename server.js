@@ -5,7 +5,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const mongoose = require('mongoose')
-mongoose.connect(MLAB_URI, { useNewUrlParser: true, useUnifiedTopology: true }); 
+let uri = "mongodb+srv://REFOT26:' + process.env.PASS + 'lusteret.sdl1n.mongodb.net/REFOT26?retryWrites=true&w=majority"
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }); 
 
 app.use(cors())
 
