@@ -35,6 +35,7 @@ let Logs = mongoose.model('Logs', exerciseLogSchema);
 
 // MongoDB ^^
 
+/* To create a new user */
 app.post("/api/exercise/new-user", bodyParser.urlencoded({extended: false}), (req, res) => {
   let newUser = new User({usernmae: req.body.username});
   newUser.save((error, nUser) => {
@@ -42,6 +43,15 @@ app.post("/api/exercise/new-user", bodyParser.urlencoded({extended: false}), (re
       res.json({username: nUser.username, _id: nUser.id})
     }
   });
+})
+
+/* To get an array of all users */
+app.get("/api/exercise/add", bodyParser.urlencoded({extended: false}), (req, res) => {
+  User.find({}, (error, arrOfUsers) => {
+    if(!error){
+      res.json(arrOfUsers);
+    }
+  })
 })
 
 const listener = app.listen(process.env.PORT || 3000, () => {
