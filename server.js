@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 // Schemas
 let exerciseLogSchema = new mongoose.Schema({
   description: {type: String, required: true},
-  duration: {type: Number, required},
+  duration: {type: Number, required: true},
   date: String
 });
  
@@ -36,8 +36,13 @@ let Logs = mongoose.model('Logs', exerciseLogSchema);
 // MongoDB ^^
 
 app.post("/api/exercise/new-user", bodyParser.urlencoded({extended: false}), (req, res) => {
-
-} )
+  let newUser = new User({usernmae: req.body.username});
+  newUser.save((error, nUser) => {
+    if(!error){
+      res.json({username: nUser.username, _id: nUser.id})
+    }
+  });
+})
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
