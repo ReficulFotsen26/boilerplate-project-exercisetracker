@@ -46,13 +46,45 @@ app.post("/api/exercise/new-user", bodyParser.urlencoded({extended: false}), (re
 })
 
 /* To get an array of all users */
-app.get("/api/exercise/add", bodyParser.urlencoded({extended: false}), (req, res) => {
+app.get("/api/exercise/add", (req, res) => {
   User.find({}, (error, arrOfUsers) => {
     if(!error){
       res.json(arrOfUsers);
     }
   })
 })
+
+app.post("/api/exercise/add", bodyParser.urlencoded({extended: false}), (req, res) => {
+  let newLog = new Logs({
+    description: req.body.description,
+    duration: parseInt(req.body.duration),
+    date: req.body.date
+  })
+  
+  if(newLog.date === ''){
+    newLog.date = new Date().toISOString().substring(0,10)
+  }
+
+  User.findByIdAndUpdate(
+    req.body.userId,
+    {$push: {log: newLog}},
+    {new: true},
+    (error, updatedUser) => {
+      if(!error){
+        let resObj = {};
+        resObj['id'] = updatedUser.id;
+        resObj['username'] = updatedUser.username;
+        resObj['description'] = newLog.description;
+        resObj['duration'] = newLog.duration;
+        resObj['date'] = new Date(newLog.date).toDateString()
+        res.json(resObj);
+      }
+    }
+
+  )
+})
+
+
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
