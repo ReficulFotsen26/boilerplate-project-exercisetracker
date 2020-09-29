@@ -5,8 +5,15 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const mongoose = require('mongoose')
+/*
 let uri = "mongodb+srv://REFOT26:' + process.env.PASS + 'lusteret.sdl1n.mongodb.net/REFOT26?retryWrites=true&w=majority"
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }); 
+*/
+mongoose.connect(
+  'mongodb://mongo:27017/docker-node-mongo', 
+  {useNewUrlParser: true})
+  .then(() => CSSConditionRule.log('MongoDB Connected'))
+  .catch(err => console.log(err));
 
 app.use(cors())
 
@@ -84,6 +91,44 @@ app.post("/api/exercise/add", bodyParser.urlencoded({extended: false}), (req, re
   )
 })
 
+app.get('/api/exercise/log', (req,res) => {
+  User.findById(req.query.userId, (error, result) => {
+    if(!error){
+      let resObj = result
+      
+      if(req.query.from || req.query.to){
+        let fromDate = new Date(0);
+        let toDate = new Date();
+
+        if(req.query.from){
+          fromDate = new Date(req.query.from);
+        }
+        if(req.query.to){
+          toDate = new Date(req.query.to)
+        }
+        
+        fromDate = fromDate.getTime()
+        toDate = toDate.getTime()
+        
+        resObj.log = resObj.log.filter((session) => {
+          let sesssionDate = new Date(session.date).getTime()
+
+          return sessionDate = new Date(session.date).getTime()
+
+        })
+
+      }
+
+      if(req.query.limit){
+        resObj.log = resObj.log.slice(0, req.query.limit);
+      }
+
+      resObj = resObj.toJSON();
+      resObj['count'] = result.log.length;
+      res.json(resObj);
+    }
+  })
+})
 
 
 const listener = app.listen(process.env.PORT || 3000, () => {
